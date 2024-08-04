@@ -1,0 +1,69 @@
+<div style="display: flex; gap: 5rem; flex-wrap: wrap">
+  <div class="input-container">
+    <div>
+      <label for="gross-pay">Bruto palk: &nbsp;</label>
+      <input [formControl]="wageForm.controls.grossPay" id="gross-pay" type="number">
+    </div>
+
+    <div>
+      <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
+      <input [formControl]="wageForm.controls.thirdPillarAmount" id="third-pillar-amount" type="number">
+    </div>
+
+    <div>
+      <label for="retirementFee">II samba %: &nbsp;</label>
+      <select id="retirementFee" [formControl]="wageForm.controls.retirementFeePercentage">
+        <option value="0">0%</option>
+        <option value="2">2%</option>
+<!--        <option value="4">4%</option>-->
+<!--        <option value="6">6%</option>-->
+      </select>
+    </div>
+  </div>
+
+  <div class="result-table-container">
+    <table class="result-table">
+      <tr>
+        <th>Category</th>
+        <th>Amount</th>
+        <th>Percentage</th>
+      </tr>
+      <tr>
+        <td><strong>Neto palk:</strong></td>
+        <td>{{wageResult()?.netPay ?? "0.00"}}</td>
+        <td>{{wageResult()?.netPayPercentage}}</td>
+      </tr>
+      <tr>
+        <td><strong>II samba kogumispension:</strong></td>
+        <td>{{wageResult()?.secondPillarAmount ?? "0.00"}}</td>
+        <td>{{wageResult()?.secondPillarPercentage}}</td>
+      </tr>
+      <tr>
+        <td><strong>III samba kogumispension:</strong></td>
+        <td>{{wageResult()?.thirdPillarAmount ?? "0.00"}}</td>
+        <td>{{wageResult()?.thirdPillarPercentage}}</td>
+      </tr>
+      <tr>
+        <td><strong>Tulumaks:</strong></td>
+        <td>{{wageResult()?.incomeTax ?? "0.00"}}</td>
+        <td>{{wageResult()?.incomeTaxPercentage}}</td>
+      </tr>
+      <tr>
+        <td><strong>Töötuskindlustusmakse:</strong></td>
+        <td>{{wageResult()?.unemploymentFee ?? "0.00"}}</td>
+        <td>{{wageResult()?.unemploymentFeePercentage}}</td>
+      </tr>
+      <tr>
+        <td><strong>Tulumaksuvaba miinimum:</strong></td>
+        <td>{{wageResult()?.taxFreeAmount ?? "0.00"}}</td>
+        <td></td>
+      </tr>
+      <tr>
+        <td><strong>Checksum:</strong></td>
+        <td>{{wageResult()?.checkSum ?? "0.00"}}</td>
+        <td></td>
+      </tr>
+    </table>
+  </div>
+</div>
+
