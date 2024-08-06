@@ -19,10 +19,17 @@
 <!--        <option value="6">6%</option>-->
       </select>
     </div>
+    <div>
+      <label for="use-income-tax-free-minimum">Kasuta tulumaksuvaba miinimumi:</label>
+      <input [formControl]="wageForm.controls.useIncomeTaxFreeMinimum" id="use-income-tax-free-minimum" type="checkbox">
+    </div>
+    @if (wageResult(); as result){
+      <div *ngIf="result.type === 'error'" style="max-width: 374px">Viga: {{result.errorReason}}</div>
+    }
   </div>
 
-  <div class="result-table-container">
-    <table class="result-table">
+  <div class="result-table-container" *ngIf="wageResult() as wageResult">
+    <table class="result-table" style="white-space: nowrap">
       <tr>
         <th>Category</th>
         <th>Amount</th>
@@ -30,37 +37,52 @@
       </tr>
       <tr>
         <td><strong>Neto palk:</strong></td>
-        <td>{{wageResult()?.netPay ?? "0.00"}}</td>
-        <td>{{wageResult()?.netPayPercentage}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.netPay : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.netPayPercentage : "0.00%"}}</td>
       </tr>
       <tr>
-        <td><strong>II samba kogumispension:</strong></td>
-        <td>{{wageResult()?.secondPillarAmount ?? "0.00"}}</td>
-        <td>{{wageResult()?.secondPillarPercentage}}</td>
+        <td><strong>II samba kogumispension (töötaja panus):</strong></td>
+        <td>{{wageResult.type == 'success' ? wageResult.secondPillarWorkerAmount : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.secondPillarWorkerPercentage : "0.00%"}}</td>
+      </tr>
+      <tr>
+        <td><strong>II samba kogumispension (riigi panus):</strong></td>
+        <td>{{wageResult.type == 'success' ? wageResult.secondPillarNationalAmount : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.secondPillarNationalPercentage : "0.00%"}}</td>
       </tr>
       <tr>
         <td><strong>III samba kogumispension:</strong></td>
-        <td>{{wageResult()?.thirdPillarAmount ?? "0.00"}}</td>
-        <td>{{wageResult()?.thirdPillarPercentage}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarAmount : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarPercentage : "0.00%"}}</td>
+      </tr>
+      <tr>
+        <td><strong>Kogu panus pensionisse:</strong></td>
+        <td>{{wageResult.type == 'success' ? wageResult.totalPensionContributionAmount : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.totalPensionContributionPercentage : "0.00%"}}</td>
       </tr>
       <tr>
         <td><strong>Tulumaks:</strong></td>
-        <td>{{wageResult()?.incomeTax ?? "0.00"}}</td>
-        <td>{{wageResult()?.incomeTaxPercentage}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.incomeTax : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.incomeTaxPercentage : "0.00%"}}</td>
       </tr>
       <tr>
         <td><strong>Töötuskindlustusmakse:</strong></td>
-        <td>{{wageResult()?.unemploymentFee ?? "0.00"}}</td>
-        <td>{{wageResult()?.unemploymentFeePercentage}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.unemploymentFee : "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.unemploymentFeePercentage : "0.00%"}}</td>
+      </tr>
+      <tr>
+        <td><strong>III samba tulumaksuvabastus:</strong></td>
+        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarTaxFreeAmount : "0.00"}}</td>
+        <td></td>
       </tr>
       <tr>
         <td><strong>Tulumaksuvaba miinimum:</strong></td>
-        <td>{{wageResult()?.taxFreeAmount ?? "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.incomeTaxFreeAmount : "0.00"}}</td>
         <td></td>
       </tr>
       <tr>
         <td><strong>Checksum:</strong></td>
-        <td>{{wageResult()?.checkSum ?? "0.00"}}</td>
+        <td>{{wageResult.type == 'success' ? wageResult.checkSum : "0.00"}}</td>
         <td></td>
       </tr>
     </table>
