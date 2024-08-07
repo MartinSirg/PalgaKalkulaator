@@ -10,31 +10,33 @@
     </div>
 
     <h3>Palk</h3>
-    <div>
+    <div class="text-input">
       <label for="gross-pay">Bruto palk: &nbsp;</label>
       <input [formControl]="wageForm.controls.grossPay" id="gross-pay" type="number">
     </div>
 
-    <h3>Pension</h3>
-    <div>
-      <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
-      <input [formControl]="wageForm.controls.thirdPillarAmount" id="third-pillar-amount" type="number">
-      @if (wageResult(); as result){
-        <p *ngIf="result.type == 'success' && result.thirdPillarTaxFreeAmount < (wageFormValue()?.thirdPillarAmount ?? 0)">
-          Info: III samba soovitud makse on suurem kui maksimaalne maksuvaba summa. Raamatupidamine kannab pensionifondi ainult maksuvaba summa.
-        </p>
-      }
-    </div>
+    <section class="input-section">
+      <h3>Pension</h3>
+      <div class="text-input">
+        <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
+        <input [formControl]="wageForm.controls.thirdPillarAmount" id="third-pillar-amount" type="number">
+        @if (wageResult(); as result){
+          <p *ngIf="result.type == 'success' && result.thirdPillarTaxFreeAmount < (wageFormValue()?.thirdPillarAmount ?? 0)">
+            Info: III samba soovitud makse on suurem kui maksimaalne maksuvaba summa. Raamatupidamine kannab pensionifondi ainult maksuvaba summa.
+          </p>
+        }
+      </div>
 
-    <div>
-      <label for="retirementFee">II samba %: &nbsp;</label>
-      <select id="retirementFee" [formControl]="wageForm.controls.secondPillarPercentage">
-        <option value="0">0%</option>
-        <option value="2">2%</option>
-        <option value="4">4%</option>
-        <option value="6">6%</option>
-      </select>
-    </div>
+      <div class="select-input">
+        <label for="retirementFee">II samba sissemakse protsent: &nbsp;</label>
+        <select id="retirementFee" [formControl]="wageForm.controls.secondPillarPercentage">
+          <option value="0">0%</option>
+          <option value="2">2%</option>
+          <option value="4">4%</option>
+          <option value="6">6%</option>
+        </select>
+      </div>
+    </section>
 
     <h3>Maksud</h3>
     <div>
