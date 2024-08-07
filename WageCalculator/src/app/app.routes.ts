@@ -1,6 +1,6 @@
 import {Routes} from '@angular/router';
-import {Calculator2024} from "./home/wage-calculator2024.component";
+import {WageCalculator} from "./wage-calculator/wage-calculator.component";
 
 export const routes: Routes = [
-  {path: "2024", component: Calculator2024},
+  {path: "**", component: WageCalculator},
 ];

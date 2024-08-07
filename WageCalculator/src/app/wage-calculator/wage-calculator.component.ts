@@ -5,7 +5,7 @@ import {startWith} from "rxjs";
 import {DecimalPipe, NgIf} from "@angular/common";
 
 @Component({
-  selector: 'app-home',
+  selector: 'app-wage-calculator',
   standalone: true,
   imports: [
     ReactiveFormsModule,
@@ -13,11 +13,11 @@ import {DecimalPipe, NgIf} from "@angular/common";
     DecimalPipe,
     FormsModule
   ],
-  templateUrl: './wage-calculator2024.component.html',
-  styleUrl: './wage-calculator2024.component.scss',
+  templateUrl: './wage-calculator.component.html',
+  styleUrl: './wage-calculator.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class Calculator2024 {
+export class WageCalculator {
   useMaxPension: boolean = false;
   wageForm = new FormGroup({
     grossPay: new FormControl<number>(0),
