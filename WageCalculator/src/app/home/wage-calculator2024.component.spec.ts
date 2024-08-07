@@ -1,18 +1,18 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { WageCalculator2024 } from './wage-calculator2024.component';
+import { Calculator2024 } from './wage-calculator2024.component';
 
 describe('HomeComponent', () => {
-  let component: WageCalculator2024;
-  let fixture: ComponentFixture<WageCalculator2024>;
+  let component: Calculator2024;
+  let fixture: ComponentFixture<Calculator2024>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [WageCalculator2024]
+      imports: [Calculator2024]
     })
     .compileComponents();
 
-    fixture = TestBed.createComponent(WageCalculator2024);
+    fixture = TestBed.createComponent(Calculator2024);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

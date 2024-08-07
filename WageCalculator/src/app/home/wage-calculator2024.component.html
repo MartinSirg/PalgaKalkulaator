@@ -1,19 +1,21 @@
 <div style="display: flex; gap: 5rem; flex-wrap: wrap">
   <div class="input-container">
+    <div style="display: flex; gap: 1rem">
+      <label></label>
+      <button (click)="set2024TaxPreset()">2024</button>
+      <button (click)="set2025TaxPreset()">2025</button>
+      <button (click)="set2026TaxPreset()">2026</button>
+      <label for="use-max-pension">Kasuta max pensioni:</label>
+      <input id="use-max-pension" type="checkbox" [(ngModel)]="useMaxPension">
+    </div>
+
+    <h3>Palk</h3>
     <div>
       <label for="gross-pay">Bruto palk: &nbsp;</label>
       <input [formControl]="wageForm.controls.grossPay" id="gross-pay" type="number">
     </div>
 
-    <div>
-      <label for="income-tax">Tulumaksu protsent: &nbsp;</label>
-      <select id="income-tax" [formControl]="wageForm.controls.incomeTaxPercentage">
-        <option value="20">20%</option>
-        <option value="22">22%</option>
-        <option value="24">24%</option>
-      </select>
-  </div>
-
+    <h3>Pension</h3>
     <div>
       <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
       <input [formControl]="wageForm.controls.thirdPillarAmount" id="third-pillar-amount" type="number">
@@ -26,16 +28,41 @@
 
     <div>
       <label for="retirementFee">II samba %: &nbsp;</label>
-      <select id="retirementFee" [formControl]="wageForm.controls.retirementFeePercentage">
+      <select id="retirementFee" [formControl]="wageForm.controls.secondPillarPercentage">
         <option value="0">0%</option>
         <option value="2">2%</option>
-<!--        <option value="4">4%</option>-->
-<!--        <option value="6">6%</option>-->
+        <option value="4">4%</option>
+        <option value="6">6%</option>
+      </select>
+    </div>
+
+    <h3>Maksud</h3>
+    <div>
+      <label for="income-tax">Tulumaksu protsent (Mille hulgas EI ole riigikaitsemaks): &nbsp;</label>
+      <select id="income-tax" [formControl]="wageForm.controls.incomeTaxPercentage">
+        <option value="20">20%</option>
+        <option value="22">22%</option>
+      </select>
+    </div>
+
+    <div>
+      <label for="defence-tax">Riigikaitsemaks: &nbsp;</label>
+      <select id="defence-tax" [formControl]="wageForm.controls.defenceTaxPercentage">
+        <option value="0">0%</option>
+        <option value="2">2%</option>
       </select>
     </div>
     <div>
       <label for="use-income-tax-free-minimum">Kasuta tulumaksuvaba miinimumi:</label>
       <input [formControl]="wageForm.controls.useIncomeTaxFreeMinimum" id="use-income-tax-free-minimum" type="checkbox">
+    </div>
+    <div>
+      <label for="use-income-tax-curve">Kasuta tulumaksu "maksuküüru":</label>
+      <input [formControl]="wageForm.controls.useIncomeTaxCurve" id="use-income-tax-curve" type="checkbox">
+    </div>
+    <div>
+      <label for="income-tax-free-minimum">Tulumaksuvaba miinimum:</label>
+      <input [formControl]="wageForm.controls.incomeTaxFreeMinimum" id="income-tax-free-minimum" type="number">
     </div>
     @if (wageResult(); as result){
       <div *ngIf="result.type === 'error'">Viga: {{result.errorReason}}</div>
@@ -104,6 +131,16 @@
         @if (wageResult.type == 'success'){
           <td>{{wageResult.incomeTax | number : "1.2-2"}}</td>
           <td>{{wageResult.incomeTaxPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
+      </tr>
+      <tr>
+        <td><strong>Riigikaitsemaks:</strong></td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.defenceTax | number : "1.2-2"}}</td>
+          <td>{{wageResult.defenceTaxPercentage | number : "1.2-2"}}%</td>
         } @else {
           <td>{{0 | number : "1.2-2"}}</td>
           <td>{{0 | number : "1.2-2"}}%</td>
