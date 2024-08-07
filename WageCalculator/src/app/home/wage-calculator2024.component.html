@@ -1,4 +1,4 @@
-<div style="display: flex; gap: 5rem; flex-wrap: wrap">
+<div style="display: flex; gap: 5rem; flex-wrap: wrap; max-width: 25rem">
   <div class="input-container">
     <div>
       <label for="gross-pay">Bruto palk: &nbsp;</label>
@@ -8,6 +8,11 @@
     <div>
       <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
       <input [formControl]="wageForm.controls.thirdPillarAmount" id="third-pillar-amount" type="number">
+      @if (wageResult(); as result){
+        <p *ngIf="result.type == 'success' && result.thirdPillarTaxFreeAmount < (wageFormValue()?.thirdPillarAmount ?? 0)">
+          Info: III samba soovitud makse on suurem kui maksimaalne maksuvaba summa. Raamatupidamine kannab pensionifondi ainult maksuvaba summa.
+        </p>
+      }
     </div>
 
     <div>
@@ -24,7 +29,7 @@
       <input [formControl]="wageForm.controls.useIncomeTaxFreeMinimum" id="use-income-tax-free-minimum" type="checkbox">
     </div>
     @if (wageResult(); as result){
-      <div *ngIf="result.type === 'error'" style="max-width: 374px">Viga: {{result.errorReason}}</div>
+      <div *ngIf="result.type === 'error'">Viga: {{result.errorReason}}</div>
     }
   </div>
 
@@ -37,52 +42,99 @@
       </tr>
       <tr>
         <td><strong>Neto palk:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.netPay : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.netPayPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.netPay | number : "1.2-2"}}</td>
+          <td>{{wageResult.netPayPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>II samba kogumispension (töötaja panus):</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.secondPillarWorkerAmount : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.secondPillarWorkerPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.secondPillarEmployeeAmount | number : "1.2-2"}}</td>
+          <td>{{wageResult.secondPillarEmployeePercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>II samba kogumispension (riigi panus):</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.secondPillarNationalAmount : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.secondPillarNationalPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.secondPillarNationalAmount | number : "1.2-2"}}</td>
+          <td>{{wageResult.secondPillarNationalPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>III samba kogumispension:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarAmount : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.thirdPillarAmount | number : "1.2-2"}}</td>
+          <td>{{wageResult.thirdPillarPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>Kogu panus pensionisse:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.totalPensionContributionAmount : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.totalPensionContributionPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.totalPensionContributionAmount | number : "1.2-2"}}</td>
+          <td>{{wageResult.totalPensionContributionPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>Tulumaks:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.incomeTax : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.incomeTaxPercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.incomeTax | number : "1.2-2"}}</td>
+          <td>{{wageResult.incomeTaxPercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>Töötuskindlustusmakse:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.unemploymentFee : "0.00"}}</td>
-        <td>{{wageResult.type == 'success' ? wageResult.unemploymentFeePercentage : "0.00%"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.unemploymentFee | number : "1.2-2"}}</td>
+          <td>{{wageResult.unemploymentFeePercentage | number : "1.2-2"}}%</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+          <td>{{0 | number : "1.2-2"}}%</td>
+        }
       </tr>
       <tr>
         <td><strong>III samba tulumaksuvabastus:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.thirdPillarTaxFreeAmount : "0.00"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.thirdPillarTaxFreeAmount | number : "1.2-2"}}</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+        }
         <td></td>
       </tr>
       <tr>
         <td><strong>Tulumaksuvaba miinimum:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.incomeTaxFreeAmount : "0.00"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.incomeTaxFreeAmount | number : "1.2-2"}}</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+        }
         <td></td>
       </tr>
       <tr>
         <td><strong>Checksum:</strong></td>
-        <td>{{wageResult.type == 'success' ? wageResult.checkSum : "0.00"}}</td>
+        @if (wageResult.type == 'success'){
+          <td>{{wageResult.checkSum | number : "1.2-2"}}</td>
+        } @else {
+          <td>{{0 | number : "1.2-2"}}</td>
+        }
         <td></td>
       </tr>
     </table>

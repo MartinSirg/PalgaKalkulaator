@@ -2,14 +2,15 @@ import {ChangeDetectionStrategy, Component, computed} from '@angular/core';
 import {FormControl, FormGroup, ReactiveFormsModule, Validators} from "@angular/forms";
 import {toSignal} from "@angular/core/rxjs-interop";
 import {startWith} from "rxjs";
-import {NgIf} from "@angular/common";
+import {DecimalPipe, NgIf} from "@angular/common";
 
 @Component({
   selector: 'app-home',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    NgIf
+    NgIf,
+    DecimalPipe
   ],
   templateUrl: './wage-calculator2024.component.html',
   styleUrl: './wage-calculator2024.component.scss',
@@ -43,42 +44,34 @@ const SECOND_PILLAR_NATIONAL_MULTIPLIER = 4 / 100; // 4%
 type WageResultError = { type: "error"; errorReason: string };
 
 type WageResultSuccess = {
-  secondPillarWorkerAmount: string;
-  secondPillarNationalAmount: string
-  secondPillarNationalPercentage: string
-  secondPillarWorkerPercentage: string;
-  thirdPillarAmount: string;
-  totalPensionContributionAmount: string
-  totalPensionContributionPercentage: string
-  unemploymentFeePercentage: string;
-  thirdPillarTaxFreeAmount: string;
-  incomeTaxFreeAmount: string;
+  secondPillarEmployeeAmount: number;
+  secondPillarNationalAmount: number
+  secondPillarNationalPercentage: number
+  secondPillarEmployeePercentage: number;
+  thirdPillarAmount: number;
+  totalPensionContributionAmount: number
+  totalPensionContributionPercentage: number
+  unemploymentFeePercentage: number;
+  thirdPillarTaxFreeAmount: number;
+  incomeTaxFreeAmount: number;
   type: "success";
-  netPay: string;
-  netPayPercentage: string;
-  unemploymentFee: string;
-  incomeTaxPercentage: string;
-  incomeTax: string;
-  checkSum: string;
-  thirdPillarPercentage: string
+  netPay: number;
+  netPayPercentage: number;
+  unemploymentFee: number;
+  incomeTaxPercentage: number;
+  incomeTax: number;
+  checkSum: number;
+  thirdPillarPercentage: number
 };
 
 /**
  *
  * @param grossPay
  * @param secondPillarPercentage II samba kogumispensioni töötaja protsent (0%, 2%, 4%, 6%)
- * @param thirdPillarAmount
+ * @param thirdPillarAmount III samba kogumispensioni sissemakse otse palgast
+ * @param useIncomeTaxFreeMinimum Kasuta tulumaksuvbaba miinimumi maksusoodustust
  */
 function getWageComposition2024(grossPay: number, secondPillarPercentage: number, thirdPillarAmount: number, useIncomeTaxFreeMinimum: boolean): WageResultSuccess | WageResultError {
-  if (thirdPillarAmount > 500) {
-    return {type: 'error', errorReason: "Third pillar amount can't be more than 500"};
-  }
-  if (thirdPillarAmount > grossPay) {
-    return {
-      type: 'error',
-      errorReason: "Third pillar amount can't be more than gross pay"
-    };
-  }
 
   const secondPillarMultiplier = secondPillarPercentage > 0 ? secondPillarPercentage / 100 : 0;
   const thirdPillarTaxFreeAmount = getThirdPillarTaxFreeAmount(grossPay, thirdPillarAmount);
@@ -97,27 +90,27 @@ function getWageComposition2024(grossPay: number, secondPillarPercentage: number
   const incomeTax = incomeTaxableAmount * INCOME_TAX_MULTIPLIER;
   const netPay = grossPay - incomeTax - unemploymentFee - secondPillarAmount - thirdPillarAmount
   if (netPay < 0) {
-    return {type: 'error', errorReason: "Third pillar amount can't be more than available net pay"};
+    return {type: 'error', errorReason: "Net pay is less than 0"};
   }
 
   return {
-    checkSum: (netPay + incomeTax + unemploymentFee + secondPillarAmount + thirdPillarAmount).toFixed(2),
-    incomeTax: incomeTax.toFixed(2),
-    incomeTaxFreeAmount: incomeTaxFreeAmount.toFixed(2),
+    checkSum: (netPay + incomeTax + unemploymentFee + secondPillarAmount + thirdPillarAmount),
+    incomeTax: incomeTax,
+    incomeTaxFreeAmount: incomeTaxFreeAmount,
     incomeTaxPercentage: getPercentageOfGross(incomeTax, grossPay),
-    netPay: netPay.toFixed(2),
+    netPay: netPay,
     netPayPercentage: getPercentageOfGross(netPay, grossPay),
-    secondPillarNationalAmount: secondPillarNationalAmount.toFixed(2),
+    secondPillarNationalAmount: secondPillarNationalAmount,
     secondPillarNationalPercentage: getPercentageOfGross(secondPillarNationalAmount, grossPay),
-    secondPillarWorkerAmount: secondPillarAmount.toFixed(2),
-    secondPillarWorkerPercentage: getPercentageOfGross(secondPillarAmount, grossPay),
-    thirdPillarAmount: thirdPillarAmount.toFixed(2),
+    secondPillarEmployeeAmount: secondPillarAmount,
+    secondPillarEmployeePercentage: getPercentageOfGross(secondPillarAmount, grossPay),
+    thirdPillarAmount: thirdPillarAmount,
     thirdPillarPercentage: getPercentageOfGross(thirdPillarAmount, grossPay),
-    thirdPillarTaxFreeAmount: thirdPillarTaxFreeAmount.toFixed(2),
-    totalPensionContributionAmount: (secondPillarAmount + thirdPillarAmount + secondPillarNationalAmount).toFixed(2),
+    thirdPillarTaxFreeAmount: thirdPillarTaxFreeAmount,
+    totalPensionContributionAmount: (secondPillarAmount + thirdPillarAmount + secondPillarNationalAmount),
     totalPensionContributionPercentage: getPercentageOfGross(secondPillarAmount + thirdPillarAmount + secondPillarNationalAmount, grossPay),
     type: "success",
-    unemploymentFee: unemploymentFee.toFixed(2),
+    unemploymentFee: unemploymentFee,
     unemploymentFeePercentage: getPercentageOfGross(unemploymentFee, grossPay),
   }
 }
@@ -152,6 +145,6 @@ function getThirdPillarTaxFreeAmount(grossPay: number, thirdPillarAmount: number
 }
 
 function getPercentageOfGross(amount: number, grossPay: number) {
-  if (grossPay === 0 || amount === 0) return "0.00%"
-  return `${(amount * 100 / grossPay).toFixed(2)}%`
+  if (grossPay === 0 || amount === 0) return 0;
+  return amount * 100 / grossPay
 }
