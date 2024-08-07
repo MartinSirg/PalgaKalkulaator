@@ -24,5 +24,13 @@ jobs:
       run: npm ci
     - name: "Build frontend"
       working-directory: ./WageCalculator
-      run: npm run build --if-present
+      run: npm run build
+    - name: "Setup pages"
+      uses: actions/configure-pages@v5
+    - name: "Upload artifact"
+      uses: actions/upload-pages-artifact@v3
+      with:
+        path: "./WageCalculator/dist"
+    - name: "Deploy pages"
+      uses: actions/deploy-pages@v4
     #- run: npm test
