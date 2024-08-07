@@ -27,7 +27,7 @@ jobs:
       run: npm ci
     - name: "Build frontend"
       working-directory: ./WageCalculator
-      run: npm run build
+      run: npm run build -- --base-href https://martinsirg.github.io/PalgaKalkulaator/
     - name: "Setup pages"
       uses: actions/configure-pages@v5
     - name: "Upload artifact"
