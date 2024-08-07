@@ -21,6 +21,8 @@ export class WageCalculator2024 {
     grossPay: new FormControl<number>(0),
     thirdPillarAmount: new FormControl<number>(0, Validators.max(500)),
     retirementFeePercentage: new FormControl<number>(2),
+    // incomeTaxPercentageExemptFromTaxRelief: new FormControl<number>(0),
+    incomeTaxPercentage: new FormControl<number>(20),
     useIncomeTaxFreeMinimum: new FormControl<boolean>(false)
   })
 
@@ -30,15 +32,15 @@ export class WageCalculator2024 {
     let grossPay = this.wageFormValue()?.grossPay ?? 0;
     if (grossPay < 0) grossPay = 0;
     const retirementFeePercentage = this.wageFormValue()?.retirementFeePercentage ?? 2;
+    const incomeTaxPercentage = this.wageFormValue()?.incomeTaxPercentage ?? 20;
     const thirdPillarAmount = this.wageFormValue()?.thirdPillarAmount ?? 0;
     const useIncomeTaxFreeMinimum = this.wageFormValue()?.useIncomeTaxFreeMinimum ?? false;
 
-    return getWageComposition2024(grossPay, retirementFeePercentage, thirdPillarAmount, useIncomeTaxFreeMinimum);
+    return getWageComposition2024(grossPay, retirementFeePercentage, thirdPillarAmount, useIncomeTaxFreeMinimum, incomeTaxPercentage);
   });
 }
 
 const UNEMPLOYMENT_FEE_MULTIPLIER = 1.6 / 100; // 1.6%
-const INCOME_TAX_MULTIPLIER = 20 / 100; // 20%
 const SECOND_PILLAR_NATIONAL_MULTIPLIER = 4 / 100; // 4%
 
 type WageResultError = { type: "error"; errorReason: string };
@@ -71,8 +73,8 @@ type WageResultSuccess = {
  * @param thirdPillarAmount III samba kogumispensioni sissemakse otse palgast
  * @param useIncomeTaxFreeMinimum Kasuta tulumaksuvbaba miinimumi maksusoodustust
  */
-function getWageComposition2024(grossPay: number, secondPillarPercentage: number, thirdPillarAmount: number, useIncomeTaxFreeMinimum: boolean): WageResultSuccess | WageResultError {
-
+function getWageComposition2024(grossPay: number, secondPillarPercentage: number, thirdPillarAmount: number, useIncomeTaxFreeMinimum: boolean, incomeTaxPercentage: number): WageResultSuccess | WageResultError {
+  const incomeTaxMultiplier = incomeTaxPercentage > 0 ? incomeTaxPercentage / 100 : 0;
   const secondPillarMultiplier = secondPillarPercentage > 0 ? secondPillarPercentage / 100 : 0;
   const thirdPillarTaxFreeAmount = getThirdPillarTaxFreeAmount(grossPay, thirdPillarAmount);
   if (thirdPillarAmount > thirdPillarTaxFreeAmount) {
@@ -87,7 +89,7 @@ function getWageComposition2024(grossPay: number, secondPillarPercentage: number
   let incomeTaxableAmount = grossPay - incomeTaxFreeAmount - unemploymentFee - secondPillarAmount - thirdPillarTaxFreeAmount;
   if (incomeTaxableAmount < 0) incomeTaxableAmount = 0;
 
-  const incomeTax = incomeTaxableAmount * INCOME_TAX_MULTIPLIER;
+  const incomeTax = incomeTaxableAmount * incomeTaxMultiplier;
   const netPay = grossPay - incomeTax - unemploymentFee - secondPillarAmount - thirdPillarAmount
   if (netPay < 0) {
     return {type: 'error', errorReason: "Net pay is less than 0"};

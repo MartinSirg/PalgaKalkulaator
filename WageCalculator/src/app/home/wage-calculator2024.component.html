@@ -1,9 +1,18 @@
-<div style="display: flex; gap: 5rem; flex-wrap: wrap; max-width: 25rem">
+<div style="display: flex; gap: 5rem; flex-wrap: wrap">
   <div class="input-container">
     <div>
       <label for="gross-pay">Bruto palk: &nbsp;</label>
       <input [formControl]="wageForm.controls.grossPay" id="gross-pay" type="number">
     </div>
+
+    <div>
+      <label for="income-tax">Tulumaksu protsent: &nbsp;</label>
+      <select id="income-tax" [formControl]="wageForm.controls.incomeTaxPercentage">
+        <option value="20">20%</option>
+        <option value="22">22%</option>
+        <option value="24">24%</option>
+      </select>
+  </div>
 
     <div>
       <label for="third-pillar-amount">III samba makse otse palgast: &nbsp;</label>
