@@ -33,7 +33,7 @@ jobs:
     - name: "Upload artifact"
       uses: actions/upload-pages-artifact@v3
       with:
-        path: "./WageCalculator/dist"
+        path: "./WageCalculator/dist/wage-calculator/browser/"
     - name: "Deploy pages"
       uses: actions/deploy-pages@v4
     #- run: npm test
